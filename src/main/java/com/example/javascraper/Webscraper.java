@@ -21,10 +21,10 @@ public class Webscraper {
     private ArrayList<Item>itemList;
     private String userSearch;
 
-    public Webscraper() {
+    public Webscraper(WebpageManager.Type scraperType) {
 
         this.proxyPool = new ProxyPool();
-        this.webpageManager = new WebpageManager(this.proxyPool);
+        this.webpageManager = new WebpageManager(this.proxyPool, scraperType);
         this.taskManager = new TaskManager(this.webpageManager);
 
     }
@@ -60,9 +60,9 @@ public class Webscraper {
      * processes user's search choice to a valid url
      * @return valid url search page
      */
-    private String sanitizedUrl() {
+    public String sanitizedUrl() {
 
-        return ("https://www.ebay.com/sch/i.html?_from=R40&_nkw=" + this.userSearch)
+        return ("https://www.ebay.co.uk/sch/i.html?_from=R40&_nkw=" + this.userSearch)
                 .replace(" ", "+");
 
     }

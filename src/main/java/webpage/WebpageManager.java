@@ -15,12 +15,14 @@ public class WebpageManager {
     private Document currentPage;
     private ProxyPool proxyPool;
     private int maximumPageNumber;
+    private Type scraperType;
 
-    public WebpageManager(ProxyPool proxyPool) {
+    public WebpageManager(ProxyPool proxyPool, Type scraperType) {
 
         this.proxyPool = proxyPool;
         this.currentPage = null;
         this.maximumPageNumber = 1;
+        this.scraperType = scraperType;
     }
 
     /**
@@ -169,22 +171,43 @@ public class WebpageManager {
     public ArrayList<Item> getSearchedItems(Document searchPage) {
 
         ArrayList<Item> searchedItems = new ArrayList<>();
-        Elements item = searchPage.select(".s-item.s-item__pl-on-bottom");
+        Elements items = searchPage.select("li.s-item.s-item__dsa-on-bottom.s-item__pl-on-bottom");
 
-        for (int i = 1; i < item.size(); i++) {
+        for (Element item : items) {
 
             // extracts the necessary attributes for each item
 
-            String itemName = item.get(i).getElementsByTag("img").attr("alt");
-            String itemPrice = item.get(i).getElementsByClass("s-item__price").text();
-            String url = item.get(i).getElementsByClass("s-item__link").attr("href");
+            String itemName = item.getElementsByTag("img").attr("alt");
+            String itemPrice = item.getElementsByClass("s-item__price").text();
+            String url = item.getElementsByClass("s-item__link").attr("href");
 
-            if (!(item.get(i).hasClass("s-item__price")) && (!(itemName.isBlank()))
-                    && !(itemPrice.isBlank())) {
+            if(checkValidListing(item)) {
                 searchedItems.add(new Item(url, itemName.replace(",", "_"), itemPrice));
             }
+
         }
         return searchedItems;
+    }
+
+    /**
+     * filters the current item to the user's newly-listed item choice
+     * @param item current item iteration
+     * @return true or false whether the item aligns with user choice
+     */
+    private boolean checkValidListing(Element item) {
+
+        if (this.scraperType == Type.ANYLISTINGS) {
+            return true;
+        } else {
+            if(item.hasClass("span.LIGHT_HIGHLIGHT")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public enum Type {
+        ANYLISTINGS, NEWLISTINGS
     }
 
 }

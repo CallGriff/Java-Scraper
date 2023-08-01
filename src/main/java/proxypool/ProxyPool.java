@@ -50,6 +50,7 @@ public class ProxyPool {
      * @param scanner to read user input
      * @return type of proxy
      */
+    @Deprecated
     private Proxy.Type getProxyType(Scanner scanner) {
 
         String userInput = "";
@@ -89,6 +90,8 @@ public class ProxyPool {
     }
 
     public void removeBrokenProxy(Proxy proxy) {
+
+        if(this.getSize() == 1) return;
 
         this.proxyList.remove(proxy);
 

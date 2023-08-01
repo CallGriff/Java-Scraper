@@ -51,19 +51,17 @@ public class ProgramController implements Initializable {
     private RadioButton socksButton;
     @FXML
     private RadioButton httpButton;
+    @FXML
+    private CheckBox filterNewListings;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         this.stringBuilder = new StringBuilder();
+        this.webscraper = new Webscraper(this.getTypeChoice());
 
     }
 
-    protected void setWebscraper(Webscraper webscraper) {
-
-        this.webscraper = webscraper;
-
-    }
 
     /**
      * Converts the resulting item list to be displayed in the interface table
@@ -139,7 +137,19 @@ public class ProgramController implements Initializable {
     }
 
     /**
-     * stores user's given proxies
+     * retrieves the user's choice for scraping newly listed items only
+     */
+    private WebpageManager.Type getTypeChoice() {
+
+        if(this.filterNewListings.isSelected()) {
+            return WebpageManager.Type.NEWLISTINGS;
+        } else {
+            return WebpageManager.Type.ANYLISTINGS;
+        }
+    }
+
+    /**
+     * reads and stores user's given proxies
      */
 
     private void setProxyPool() {
@@ -173,7 +183,10 @@ public class ProgramController implements Initializable {
             }
 
         }
-        WebpageManager webpageManager = new WebpageManager(proxyPool);
+
+        WebpageManager.Type userScraperChoice = this.getTypeChoice();
+
+        WebpageManager webpageManager = new WebpageManager(proxyPool, userScraperChoice);
         this.webscraper.setWebpageManager(webpageManager);
     }
 

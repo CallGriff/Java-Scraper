@@ -51,7 +51,7 @@ public class TaskManager {
             } catch (InterruptedException e) {
                 System.out.println("Thread interrupted while waiting for the result");
             } catch (TimeoutException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Thread has timed out");
             }
 
         }

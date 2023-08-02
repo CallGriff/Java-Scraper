@@ -16,6 +16,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.*;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeoutException;
 
 
 public class ProgramController implements Initializable {
@@ -130,7 +131,17 @@ public class ProgramController implements Initializable {
         String userSearch = this.userSearch.getText();
         this.webscraper.setUserSearch(userSearch);
         this.setProxyPool();
-        this.webscraper.scrape();
+
+        try {
+            this.webscraper.scrape();
+        }catch(TimeoutException e) {
+            System.out.println("Couldn't connect to target webpage.");
+            this.setConsoleOutput("Failed to connect to website. Please check your proxies");
+            return;
+        }
+
+
+
         this.convertItemList();
         this.setConsoleOutput("Successfully scraped " + this.itemList.size() + " items.");
 

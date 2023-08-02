@@ -70,17 +70,13 @@ public class Webscraper {
     /**
      * performs the scraping process
      */
-    public void scrape() {
+    public void scrape() throws TimeoutException {
 
         System.out.println("Attempting to scrape " + this.userSearch + "...");
 
         String firstPageUrl = this.sanitizedUrl();
 
-        try{
-            this.webpageManager.setMaximumPageNumber(firstPageUrl);
-        } catch(TimeoutException e) {
-            System.out.println(e.getMessage());
-        }
+        this.webpageManager.setMaximumPageNumber(firstPageUrl);
 
         this.setTaskManager(new TaskManager(this.webpageManager));
 

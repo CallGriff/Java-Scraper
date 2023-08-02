@@ -45,6 +45,10 @@ public class WebpageManager {
      */
     private void setCurrentPage(String url, int failedConnections) throws TimeoutException {
 
+        if(failedConnections == 3) {
+            throw new TimeoutException();
+        }
+
         Proxy currentProxy = this.proxyPool.getNewProxy();
 
         try {
@@ -54,12 +58,7 @@ public class WebpageManager {
                     .get();
         }catch(IOException e) {
 
-            if(failedConnections == 2) {
-                throw new TimeoutException();
-            }
-
             failedConnections++;
-
             System.out.println("Failed to retrieve target webpage. Rotating proxy...");
             this.proxyPool.removeBrokenProxy(currentProxy);
             this.proxyPool.getNewProxy();
